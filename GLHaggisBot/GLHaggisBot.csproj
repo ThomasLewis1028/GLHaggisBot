@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Discord.Net" Version="2.2.0" />
+      <PackageReference Include="Discord.Net.Commands" Version="2.2.0" />
+      <PackageReference Include="Discord.Net.Core" Version="2.2.0" />
+      <PackageReference Include="Google.Apis" Version="1.49.0" />
+      <PackageReference Include="Google.Apis.Sheets.v4" Version="1.49.0.2069" />
+      <PackageReference Include="NLog" Version="4.7.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="credentials.json" />
+      <EmbeddedResource Include="credentials.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="properties.json" />
+      <EmbeddedResource Include="properties.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="NLog.config" />
+      <EmbeddedResource Include="NLog.config">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>
