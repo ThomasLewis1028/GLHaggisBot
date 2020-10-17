@@ -27,6 +27,10 @@
       <EmbeddedResource Include="NLog.config">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </EmbeddedResource>
+      <None Remove="mp2bot-1599252716474-e4f815d1563b.json" />
+      <EmbeddedResource Include="credentials2.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>
