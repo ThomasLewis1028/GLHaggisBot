@@ -161,9 +161,13 @@ namespace GLHaggisBot
                         Description = "Note that each section is capped at 60%, 5%+15% and 20% respectively"
                     };
                     var score = Double.Parse(member[12].ToString()?.Split('%')[0]!);
-                    eb.Color = Math.Abs(score - 100.00) < 0.01 ? new Color(47, 62, 80) :
-                        score < 100.00 && score >= 85.00 ? new Color(34, 73, 54) :
-                        score < 85.00 && score > 50.00 ? new Color(100, 0, 0) : new Color(40, 40, 40);
+                    eb.Color = Math.Abs(score - 100.00) < 0.01 
+                        ? new Color(47, 62, 80) 
+                        : score < 100.00 && score >= 85.00 
+                            ? new Color(34, 73, 54) 
+                            : score < 85.00 && score > 50.00 
+                                ? new Color(100, 0, 0) 
+                                : new Color(40, 40, 40);
                     eb.AddField("Galactic Power", member[2]);
                     eb.AddField("Tickets - " + member[4], member[3] + " Missed");
                     eb.AddField("Territory War - " + member[6] + " + " + member[9],
@@ -179,7 +183,7 @@ namespace GLHaggisBot
             }
             else
             {
-                await sm.Channel.SendMessageAsync(userName + " not found");
+                await sm.Channel.SendMessageAsync(userName == null ? allyCode : userName + " not found");
             }
         }
 
