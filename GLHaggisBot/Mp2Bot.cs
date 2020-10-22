@@ -89,7 +89,7 @@ namespace GLHaggisBot
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine(e.Message);
+                Console.Out.WriteLine("FAILED TO GET API: \n" + e.Message);
             }
         }
 
