@@ -103,7 +103,7 @@ namespace GLHaggisBot
             eb.AddField("Help", "help");
 
             eb.AddField("Guild Activity",
-                "Get Member Activity - (ma | memberActivity) [@<user>]\n" +
+                "Get Member Activity - (ma | memberActivity) [(@<user> | <ally-code>)]\n" +
                 "Get Guild Activity - (ga | guildActivity)\n");
 
 
