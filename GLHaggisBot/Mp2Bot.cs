@@ -277,9 +277,9 @@ namespace GLHaggisBot
             ulong _mutinyGuild = 689151964075917349;
 
             var guild = dsc.GetGuild(_mutinyGuild);
+            _logger.Info(guild);
 
             _logger.Info("About to get members from roles");
-            _logger.Info(guild.Roles.Count);
             var members = guild.Roles.First(r => r.Id == _mp2Role).Members as IEnumerable<IGuildUser>;
             _logger.Info("Got members from roles");
 
