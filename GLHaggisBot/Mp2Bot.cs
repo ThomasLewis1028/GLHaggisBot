@@ -62,7 +62,7 @@ namespace GLHaggisBot
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine(e.Message);
+                Console.Out.WriteLine("FAILED TO GET CREDENTIALS" + e.Message);
             }
 
             _spreadsheetId = (string) Prop.GetValue("mp2Sheet");
