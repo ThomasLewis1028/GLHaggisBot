@@ -52,7 +52,7 @@ namespace GLHaggisBot
             while (true)
             {
                 await _mp2Bot.UpdateProbation(_client);
-                await Task.Delay(30000);
+                await Task.Delay(86400000);
             }
             // ReSharper disable once FunctionNeverReturns
         }
