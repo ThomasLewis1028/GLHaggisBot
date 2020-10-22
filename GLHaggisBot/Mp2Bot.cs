@@ -259,7 +259,6 @@ namespace GLHaggisBot
 
         public async Task UpdateProbation(DiscordSocketClient dsc)
         {
-            Thread.Sleep(5000);
             SpreadsheetsResource.ValuesResource.GetRequest memberRequest =
                 _service.Spreadsheets.Values.Get(_spreadsheetId, _members);
 
@@ -273,14 +272,8 @@ namespace GLHaggisBot
             IList<IList<Object>> activityValues = activityResponse.Values
                 .Where(m => Double.Parse(m[12].ToString()?.Split('%')[0]!) < 85.00).ToList();
 
-            ulong _mp2Role = 689727941625905154;
-            ulong _mp2Probation = 752342911479185490;
-            ulong _mutinyGuild = 689151964075917349;
-
-            var guild = dsc.GetGuild(_mutinyGuild);
-            _logger.Info(guild);
             
-            _logger.Info("Getting members");
+            var guild = dsc.GetGuild(_mutinyGuild);
             var members = guild.Roles.First(r => r.Id == _mp2Role).Members as IEnumerable<IGuildUser>;
 
             foreach (var member in members)
