@@ -8,9 +8,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util.Store;
 using Newtonsoft.Json.Linq;
 using Color = Discord.Color;
 
@@ -18,6 +21,8 @@ namespace GLHaggisBot
 {
     public class Mp2Bot
     {
+        static readonly string[] Scopes = {SheetsService.Scope.SpreadsheetsReadonly};
+        private readonly GoogleCredential _credential;
         private readonly String _spreadsheetId;
         private readonly ulong _mutinyRole;
         private readonly ulong _mp2Role;
@@ -53,43 +58,40 @@ namespace GLHaggisBot
             _apiKey = (string) Prop.GetValue("apiKey");
 
             var applicationName = (string) Prop.GetValue("sheetName");
+            string credPath = "token.json";
 
+            try
+            {
+                using (var stream =
+                    new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read))
+                {
+                    _credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
+                }
+                // The file token.json stores the user's access and refresh tokens, and is created
+                // automatically when the authorization flow completes for the first time.
+                
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine("FAILED TO GET CREDENTIALS" + e.Message);
+            }
+            
             try
             {
                 // Create Google Sheets API service.
                 _service = new SheetsService(new BaseClientService.Initializer
                 {
                     ApplicationName = applicationName,
-                    ApiKey = _apiKey
+                    HttpClientInitializer = _credential
+                    // ApiKey = _apiKey
                 });
 
                 _logger.Info("API Successfully Retrieved");
                 
-                TempFunc();
             }
             catch (Exception e)
             {
                 _logger.Error("FAILED TO GET API: \n" + e.Message);
-            }
-        }
-        
-        public async void TempFunc()
-        {
-            var applicationName = (string) Prop.GetValue("sheetName");
-            var service2 = new DiscoveryService(new BaseClientService.Initializer
-            {
-                ApplicationName = applicationName,
-                ApiKey = _apiKey
-            });
-
-            var result = await service2.Apis.List().ExecuteAsync();
-            // Display the results.
-            if (result.Items != null)
-            {
-                foreach (DirectoryList.ItemsData api in result.Items)
-                {
-                    Console.WriteLine(api.Id + " - " + api.Title);
-                }
             }
         }
 
