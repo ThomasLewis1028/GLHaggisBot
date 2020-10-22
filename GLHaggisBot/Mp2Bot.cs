@@ -1,5 +1,7 @@
 ﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Discovery.v1;
+using Google.Apis.Discovery.v1.Data;
 using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
@@ -60,11 +62,32 @@ namespace GLHaggisBot
                     ApplicationName = applicationName,
                     ApiKey = _apiKey
                 });
+
                 _logger.Info("API Successfully Retrieved");
             }
             catch (Exception e)
             {
                 _logger.Error("FAILED TO GET API: \n" + e.Message);
+            }
+        }
+        
+        public async void TempFunc()
+        {
+            var applicationName = (string) Prop.GetValue("sheetName");
+            var service2 = new DiscoveryService(new BaseClientService.Initializer
+            {
+                ApplicationName = applicationName,
+                ApiKey = _apiKey
+            });
+
+            var result = await service2.Apis.List().ExecuteAsync();
+            // Display the results.
+            if (result.Items != null)
+            {
+                foreach (DirectoryList.ItemsData api in result.Items)
+                {
+                    Console.WriteLine(api.Id + " - " + api.Title);
+                }
             }
         }
 
