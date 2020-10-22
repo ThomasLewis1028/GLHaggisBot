@@ -71,7 +71,7 @@ namespace GLHaggisBot
                         _logger.Info("Getting Member Activity: " + sm.Content);
                         _mp2Bot.GetActivity(sm);
                         break;
-                    case var content when content.ToLower().Contains("!ga"):
+                    case var _ when Regex.GuildActivity.IsMatch(sm.Content):
                         _logger.Info("Getting Guild Activity: " + sm.Content);
                         _mp2Bot.GetAllActivity(sm);
                         break;
