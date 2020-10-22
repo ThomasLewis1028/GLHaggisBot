@@ -31,6 +31,7 @@ namespace GLHaggisBot
         private readonly ulong _td;
         private readonly ulong _mutinyGuild;
         private readonly ulong _mp2Probation;
+        private readonly ulong _mp2Mediation;
         private readonly String _apiKey;
         private readonly SheetsService _service;
         private static readonly RegularExpressions Regex = new RegularExpressions();
@@ -55,6 +56,7 @@ namespace GLHaggisBot
             _knightsOfRen = (ulong) Prop.GetValue("knightsOfRen");
             _td = (ulong) Prop.GetValue("td");
             _mp2Probation = (ulong) Prop.GetValue("mp2Probation");
+            _mp2Mediation = (ulong) Prop.GetValue("mp2Mediation");
             _apiKey = (string) Prop.GetValue("apiKey");
 
             var applicationName = (string) Prop.GetValue("sheetName");
@@ -257,6 +259,17 @@ namespace GLHaggisBot
             }
         }
 
+        public async Task UpdateProbation(DiscordSocketClient dsc, SocketMessage sm)
+        {
+            var guild = dsc.GetGuild(_mutinyGuild);
+            var members = guild.Roles.First(r => r.Id == _knightsOfRen).Members as IEnumerable<IGuildUser>;
+
+            if (members.Any(m => m.Id == sm.Author.Id))
+                await UpdateProbation(dsc);
+
+            await sm.Channel.SendMessageAsync("Only the Knights of Ren can use this command");
+        }
+
         public async Task UpdateProbation(DiscordSocketClient dsc)
         {
             SpreadsheetsResource.ValuesResource.GetRequest memberRequest =
@@ -272,7 +285,7 @@ namespace GLHaggisBot
             IList<IList<Object>> activityValues = activityResponse.Values
                 .Where(m => Double.Parse(m[12].ToString()?.Split('%')[0]!) < 85.00).ToList();
 
-            
+
             var guild = dsc.GetGuild(_mutinyGuild);
             var members = guild.Roles.First(r => r.Id == _mp2Role).Members as IEnumerable<IGuildUser>;
 
@@ -284,7 +297,11 @@ namespace GLHaggisBot
                 if (activityValues.Any(m => ign.Any(a => a.Contains(m[0]))))
                 {
                     if (!member.RoleIds.Contains(_mp2Probation))
+                    {
                         await member.AddRoleAsync(guild.GetRole(_mp2Probation));
+                        var mediationChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2Mediation);
+                        await mediationChannel.SendMessageAsync($"<@{member.Id}> You are now on probation. Use !ma to view your current activity.");
+                    }
                 }
                 else
                 {

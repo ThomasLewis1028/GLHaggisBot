@@ -74,6 +74,9 @@ namespace GLHaggisBot
                         _logger.Info("Getting Guild Activity: " + sm.Content);
                         _mp2Bot.GetAllActivity(sm);
                         break;
+                    case var _ when Regex.UpdateProbation.IsMatch(sm.Content):
+                        await _mp2Bot.UpdateProbation(_client);
+                        break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
                         EmbedBuilder eb = new EmbedBuilder
                         {
