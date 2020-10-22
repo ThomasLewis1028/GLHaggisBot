@@ -33,10 +33,6 @@ namespace GLHaggisBot
         {
             _token =
                 test ? (string) Prop.GetValue("tokenTest") : (string) Prop.GetValue("token");
-            //
-            // _haggisId = (long) Prop.GetValue("Admin")?[0].First.First;
-            //
-            // _mp2Sheet = (string) Prop.GetValue("mp2Sheet");
         }
 
         public async Task MainAsync()

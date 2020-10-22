@@ -86,6 +86,7 @@ namespace GLHaggisBot
                     ApplicationName = applicationName,
                     ApiKey = _apiKey
                 });
+                Console.Out.WriteLine("API SUCCESSFULLY GOT");
             }
             catch (Exception e)
             {
