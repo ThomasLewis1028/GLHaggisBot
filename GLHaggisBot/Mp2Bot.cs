@@ -272,6 +272,9 @@ namespace GLHaggisBot
             IList<IList<Object>> activityValues = activityResponse.Values
                 .Where(m => Double.Parse(m[12].ToString()?.Split('%')[0]!) < 85.00).ToList();
 
+            ulong _mp2Role = 689727941625905154;
+            ulong _mp2Probation = 752342911479185490;
+            ulong _mutinyGuild = 689151964075917349;
 
             var guild = dsc.GetGuild(_mutinyGuild);
 
