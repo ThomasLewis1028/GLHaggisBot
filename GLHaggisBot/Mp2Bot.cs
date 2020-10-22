@@ -89,7 +89,7 @@ namespace GLHaggisBot
             }
             catch (Exception e)
             {
-                _logger.Error("FAILED TO GET API: \n" + e.Message);
+                _logger.Info("FAILED TO GET API: \n" + e.Message);
             }
         }
 
