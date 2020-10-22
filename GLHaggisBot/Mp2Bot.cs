@@ -36,8 +36,8 @@ namespace GLHaggisBot
         private static readonly RegularExpressions Regex = new RegularExpressions();
         private readonly String _activityList = "ACTIVITY LIST!A3:M52";
         private readonly String _members = "MEMBERS!A2:F51";
-        
-        
+
+
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Properties file
@@ -62,20 +62,19 @@ namespace GLHaggisBot
 
             try
             {
-                using (var stream =
-                    new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read))
                 {
                     _credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
                 }
+
                 // The file token.json stores the user's access and refresh tokens, and is created
                 // automatically when the authorization flow completes for the first time.
-                
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("FAILED TO GET CREDENTIALS" + e.Message);
+                Console.Out.WriteLine("FAILED TO GET CREDENTIALS\n" + e.Message);
             }
-            
+
             try
             {
                 // Create Google Sheets API service.
@@ -87,7 +86,6 @@ namespace GLHaggisBot
                 });
 
                 _logger.Info("API Successfully Retrieved");
-                
             }
             catch (Exception e)
             {
@@ -254,7 +252,7 @@ namespace GLHaggisBot
                 await sm.Channel.SendMessageAsync(null, false, eb.Build());
             }
             else
-            { 
+            {
                 await sm.Channel.SendMessageAsync("No Data Found");
             }
         }
