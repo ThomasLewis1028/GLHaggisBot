@@ -64,6 +64,8 @@ namespace GLHaggisBot
                 });
 
                 _logger.Info("API Successfully Retrieved");
+                
+                TempFunc();
             }
             catch (Exception e)
             {
