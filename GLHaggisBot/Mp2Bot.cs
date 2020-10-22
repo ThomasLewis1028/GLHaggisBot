@@ -1,15 +1,11 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Sheets.v4;
+﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -20,8 +16,6 @@ namespace GLHaggisBot
 {
     public class Mp2Bot
     {
-        static readonly string[] Scopes = {SheetsService.Scope.SpreadsheetsReadonly};
-        private readonly UserCredential _credential;
         private readonly String _spreadsheetId;
         private readonly ulong _mutinyRole;
         private readonly ulong _mp2Role;
@@ -35,6 +29,9 @@ namespace GLHaggisBot
         private static readonly RegularExpressions Regex = new RegularExpressions();
         private readonly String _activityList = "ACTIVITY LIST!A3:M52";
         private readonly String _members = "MEMBERS!A2:F51";
+        
+        
+        private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         // Properties file
         private static readonly JObject Prop =
@@ -43,28 +40,6 @@ namespace GLHaggisBot
 
         public Mp2Bot()
         {
-            string credPath = "token.json";
-            try
-            {
-                using var stream =
-                    new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read);
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                
-                // Console.Out.WriteLine("TRYING TO GET CREDENTIALS");
-                // _credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                //     GoogleClientSecrets.Load(stream).Secrets,
-                //     Scopes,
-                //     "user",
-                //     CancellationToken.None,
-                //     new FileDataStore(credPath, true)).Result;
-                // Console.WriteLine("Credential file saved to: " + credPath);
-            }
-            catch (Exception e)
-            {
-                Console.Out.WriteLine("FAILED TO GET CREDENTIALS" + e.Message);
-            }
-
             _spreadsheetId = (string) Prop.GetValue("mp2Sheet");
             _mp2Role = (ulong) Prop.GetValue("mutinyPartDeux");
             _mutinyRole = (ulong) Prop.GetValue("mutiny");
@@ -79,19 +54,17 @@ namespace GLHaggisBot
 
             try
             {
-                Console.Out.WriteLine("TRYING TO GET API");
                 // Create Google Sheets API service.
                 _service = new SheetsService(new BaseClientService.Initializer
                 {
-                    // HttpClientInitializer = _credential,
                     ApplicationName = applicationName,
                     ApiKey = _apiKey
                 });
-                Console.Out.WriteLine("API SUCCESSFULLY GOT");
+                _logger.Info("API Successfully Retrieved");
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("FAILED TO GET API: \n" + e.Message);
+                _logger.Error("FAILED TO GET API: \n" + e.Message);
             }
         }
 
@@ -254,8 +227,8 @@ namespace GLHaggisBot
                 await sm.Channel.SendMessageAsync(null, false, eb.Build());
             }
             else
-            {
-                Console.WriteLine("No data found.");
+            { 
+                await sm.Channel.SendMessageAsync("No Data Found");
             }
         }
 
