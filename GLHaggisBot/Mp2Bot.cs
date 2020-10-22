@@ -259,6 +259,7 @@ namespace GLHaggisBot
 
         public async Task UpdateProbation(DiscordSocketClient dsc)
         {
+            Thread.Sleep(5000);
             SpreadsheetsResource.ValuesResource.GetRequest memberRequest =
                 _service.Spreadsheets.Values.Get(_spreadsheetId, _members);
 
