@@ -278,6 +278,7 @@ namespace GLHaggisBot
 
             var guild = dsc.GetGuild(_mutinyGuild);
             _logger.Info(guild);
+            
             _logger.Info("Getting members");
             var members = guild.Roles.First(r => r.Id == _mp2Role).Members as IEnumerable<IGuildUser>;
 
