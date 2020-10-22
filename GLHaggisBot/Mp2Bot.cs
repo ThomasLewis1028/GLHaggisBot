@@ -277,6 +277,7 @@ namespace GLHaggisBot
             ulong _mutinyGuild = 689151964075917349;
 
             var guild = dsc.GetGuild(_mutinyGuild);
+            Thread.Sleep(100);
             var members = guild.Roles.First(r => r.Id == _mp2Role).Members as IEnumerable<IGuildUser>;
 
             foreach (var member in members)
