@@ -30,6 +30,7 @@ namespace GLHaggisBot
         private readonly ulong _td;
         private readonly ulong _mutinyGuild;
         private readonly ulong _mp2Probation;
+        private readonly String _apiKey;
         private readonly SheetsService _service;
         private static readonly RegularExpressions Regex = new RegularExpressions();
         private readonly String _activityList = "ACTIVITY LIST!A3:M52";
@@ -46,10 +47,11 @@ namespace GLHaggisBot
             try
             {
                 using var stream =
-                    new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read);
+                    new FileStream(@"service_account.json", FileMode.Open, FileAccess.Read);
                 // The file token.json stores the user's access and refresh tokens, and is created
                 // automatically when the authorization flow completes for the first time.
 
+                
                 _credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
                     Scopes,
@@ -71,16 +73,18 @@ namespace GLHaggisBot
             _knightsOfRen = (ulong) Prop.GetValue("knightsOfRen");
             _td = (ulong) Prop.GetValue("td");
             _mp2Probation = (ulong) Prop.GetValue("mp2Probation");
+            _apiKey = (string) Prop.GetValue("apiKey");
 
             var applicationName = (string) Prop.GetValue("sheetName");
 
             try
             {
                 // Create Google Sheets API service.
-                _service = new SheetsService(new BaseClientService.Initializer()
+                _service = new SheetsService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = _credential,
                     ApplicationName = applicationName,
+                    ApiKey = _apiKey
                 });
             }
             catch (Exception e)

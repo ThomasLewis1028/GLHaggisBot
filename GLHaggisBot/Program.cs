@@ -21,7 +21,7 @@ namespace GLHaggisBot
             }
             catch (Exception e)
             {
-                Logger.Info(e);
+                Console.WriteLine(e);
             }
         }
     }
