@@ -79,6 +79,7 @@ namespace GLHaggisBot
 
             try
             {
+                Console.Out.WriteLine("TRYING TO GET API");
                 // Create Google Sheets API service.
                 _service = new SheetsService(new BaseClientService.Initializer
                 {
