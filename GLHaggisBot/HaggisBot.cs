@@ -81,7 +81,7 @@ namespace GLHaggisBot
                         EmbedBuilder eb = new EmbedBuilder
                         {
                             Title = "Help",
-                            Description = "All commands are case insensitive and are preceded with !",
+                            Description = "All commands are case insensitive and are preceded with ;",
                             Color = Color.Gold
                         };
                         eb.AddField("Help", "help");
