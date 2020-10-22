@@ -300,7 +300,7 @@ namespace GLHaggisBot
                     {
                         await member.AddRoleAsync(guild.GetRole(_mp2Probation));
                         var mediationChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2Mediation);
-                        await mediationChannel.SendMessageAsync($"<@{member.Id}> You are now on probation. Use !ma to view your current activity.");
+                        await mediationChannel.SendMessageAsync($"<@{member.Id}> You are now on probation. Use ;ma to view your current activity.");
                     }
                 }
                 else

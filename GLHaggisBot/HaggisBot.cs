@@ -54,6 +54,7 @@ namespace GLHaggisBot
                 await Task.Delay(43200000);
                 await _mp2Bot.UpdateProbation(_client);
             }
+
             // ReSharper disable once FunctionNeverReturns
         }
 
@@ -61,7 +62,7 @@ namespace GLHaggisBot
         {
             if (sm.Author.IsBot)
                 return;
-            
+
             try
             {
                 switch (sm.Content)
@@ -75,21 +76,12 @@ namespace GLHaggisBot
                         _mp2Bot.GetAllActivity(sm);
                         break;
                     case var _ when Regex.UpdateProbation.IsMatch(sm.Content):
+                        _logger.Info("Updating Probation: " + sm.Content);
                         await _mp2Bot.UpdateProbation(_client);
                         break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
-                        EmbedBuilder eb = new EmbedBuilder
-                        {
-                            Title = "Help",
-                            Description = "All commands are case insensitive and are preceded with ;",
-                            Color = Color.Gold
-                        };
-                        eb.AddField("Help", "help");
-                        eb.AddField("Get Member Activity", "ma <@Member>(optional)");
-                        eb.AddField("Get Guild Activity", "ga");
-
                         _logger.Info("Sending help list: " + sm.Content);
-                        await sm.Channel.SendMessageAsync(null, false, eb.Build());
+                        await SendHelp(sm);
                         break;
                 }
             }
@@ -97,6 +89,26 @@ namespace GLHaggisBot
             {
                 await sm.Channel.SendMessageAsync(e.Message);
             }
+        }
+
+        private async Task SendHelp(SocketMessage sm)
+        {
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.Title = "Help";
+            eb.Description = "All commands are case insensitive and are preceded with ;\n" +
+                             "<> indicates required parameter \n" +
+                             "[] indicates optional parameter \n" +
+                             "() indicates either or parameter";
+            eb.Color = Color.Gold;
+            eb.AddField("Help", "help");
+
+            eb.AddField("Guild Activity",
+                "Get Member Activity - (ma | memberActivity) [@<user>]\n" +
+                "Get Guild Activity - (ga | guildActivity)\n");
+
+
+            _logger.Info("Sending help list: " + sm.Content);
+            await sm.Channel.SendMessageAsync(null, false, eb.Build());
         }
     }
 }
