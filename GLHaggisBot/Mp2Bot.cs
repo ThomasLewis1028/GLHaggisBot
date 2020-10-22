@@ -82,7 +82,7 @@ namespace GLHaggisBot
                 // Create Google Sheets API service.
                 _service = new SheetsService(new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = _credential,
+                    // HttpClientInitializer = _credential,
                     ApplicationName = applicationName,
                     ApiKey = _apiKey
                 });
