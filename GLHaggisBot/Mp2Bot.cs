@@ -278,7 +278,9 @@ namespace GLHaggisBot
 
             var guild = dsc.GetGuild(_mutinyGuild);
 
+            _logger.Info("About to get members from roles");
             var members = guild.Roles.First(r => r.Id == _mp2Role).Members as IEnumerable<IGuildUser>;
+            _logger.Info("Got members from roles");
 
             foreach (var member in members)
             {
