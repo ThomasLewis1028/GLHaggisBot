@@ -23,8 +23,10 @@ namespace GLHaggisBot
 
         // Get the token out of the properties folder
         private readonly string _token;
-        // private readonly long _haggisId;
-        // private readonly string _mp2Sheet;
+
+        // Set up emoji for Reactions
+        private static readonly Emoji SearchGlass = new Emoji("🔍");
+        private static readonly Emoji CheckMark = new Emoji("✅");
 
         // Discord config files
         private DiscordSocketClient _client;
@@ -68,16 +70,22 @@ namespace GLHaggisBot
                 switch (sm.Content)
                 {
                     case var _ when Regex.MemberActivity.IsMatch(sm.Content):
+                        await SendReaction(sm, SearchGlass);
                         _logger.Info("Getting Member Activity: " + sm.Content);
                         _mp2Bot.GetActivity(sm);
+                        await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.GuildActivity.IsMatch(sm.Content):
+                        await SendReaction(sm, SearchGlass);
                         _logger.Info("Getting Guild Activity: " + sm.Content);
                         _mp2Bot.GetAllActivity(sm);
+                        await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.UpdateProbation.IsMatch(sm.Content):
+                        await SendReaction(sm, SearchGlass);
                         _logger.Info("Updating Probation: " + sm.Content);
                         await _mp2Bot.UpdateProbation(_client);
+                        await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
                         _logger.Info("Sending help list: " + sm.Content);
@@ -109,6 +117,11 @@ namespace GLHaggisBot
 
             _logger.Info("Sending help list: " + sm.Content);
             await sm.Channel.SendMessageAsync(null, false, eb.Build());
+        }
+
+        private async Task SendReaction(SocketMessage sm, Emoji emoji)
+        {
+            await sm.AddReactionAsync(emoji);
         }
     }
 }
