@@ -30,6 +30,7 @@ namespace GLHaggisBot
         private readonly ulong _knightsOfRen;
         private readonly ulong _td;
         private readonly ulong _mutinyGuild;
+        private readonly ulong _mp2General;
         private readonly ulong _mp2Probation;
         private readonly ulong _mp2Mediation;
         private readonly String _apiKey;
@@ -55,6 +56,7 @@ namespace GLHaggisBot
             _sithApprentices = (ulong) Prop.GetValue("sithApprentices");
             _knightsOfRen = (ulong) Prop.GetValue("knightsOfRen");
             _td = (ulong) Prop.GetValue("td");
+            _mp2General = (ulong) Prop.GetValue("mp2General");
             _mp2Probation = (ulong) Prop.GetValue("mp2Probation");
             _mp2Mediation = (ulong) Prop.GetValue("mp2Mediation");
             _apiKey = (string) Prop.GetValue("apiKey");
@@ -300,17 +302,19 @@ namespace GLHaggisBot
 
                 if (activityValues.Any(m => ign.Any(a => a.Contains(m[0]))))
                 {
-                    if (!member.RoleIds.Contains(_mp2Probation))
-                    {
-                        await member.AddRoleAsync(guild.GetRole(_mp2Probation));
-                        var mediationChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2Mediation);
-                        await mediationChannel.SendMessageAsync($"<@{member.Id}> You are now on probation. Use ;ma to view your current activity.");
-                    }
+                    if (member.RoleIds.Contains(_mp2Probation)) continue;
+                    
+                    await member.AddRoleAsync(guild.GetRole(_mp2Probation));
+                    var mediationChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2Mediation);
+                    await mediationChannel.SendMessageAsync($"<@{member.Id}> You are now on probation. Use ;ma to view your current activity.");
                 }
                 else
                 {
-                    if (member.RoleIds.Contains(_mp2Probation))
-                        await member.RemoveRoleAsync(guild.GetRole(_mp2Probation));
+                    if (!member.RoleIds.Contains(_mp2Probation)) continue;
+                    
+                    await member.RemoveRoleAsync(guild.GetRole(_mp2Probation));
+                    var mp2GeneralChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2General);
+                    await mp2GeneralChannel.SendMessageAsync($"<@{member.Id}> You are no longer on probation probation!");
                 }
             }
         }
