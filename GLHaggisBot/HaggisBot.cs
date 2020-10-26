@@ -69,12 +69,6 @@ namespace GLHaggisBot
             {
                 switch (sm.Content)
                 {
-                    case var _ when sm.Content.ToLower() == "ping":
-                        await SendReaction(sm, SearchGlass);
-                        _logger.Info("Ping: " + sm.Content);
-                        await sm.Channel.SendMessageAsync("Pong");
-                        await SendReaction(sm, CheckMark);
-                        break;
                     case var _ when Regex.MemberActivity.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Getting Member Activity: " + sm.Content);
