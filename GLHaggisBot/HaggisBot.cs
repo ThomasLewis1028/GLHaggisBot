@@ -84,7 +84,7 @@ namespace GLHaggisBot
                     case var _ when Regex.UpdateProbation.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Updating Probation: " + sm.Content);
-                        await _mp2Bot.UpdateProbation(_client);
+                        await _mp2Bot.UpdateProbation(_client, sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
