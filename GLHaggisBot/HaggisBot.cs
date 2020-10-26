@@ -62,6 +62,7 @@ namespace GLHaggisBot
 
         private async Task MessageReceived(SocketMessage sm)
         {
+            _logger.Info($"{sm.Author.Username} - MESSAGE: {sm.Content}");
             if (sm.Author.IsBot)
                 return;
 
@@ -113,9 +114,7 @@ namespace GLHaggisBot
             eb.AddField("Guild Activity",
                 "Get Member Activity - (ma | memberActivity) [(@<user> | <ally-code>)]\n" +
                 "Get Guild Activity - (ga | guildActivity)\n");
-
-
-            _logger.Info("Sending help list: " + sm.Content);
+            
             await sm.Channel.SendMessageAsync(null, false, eb.Build());
         }
 
