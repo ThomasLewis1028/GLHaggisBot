@@ -268,9 +268,12 @@ namespace GLHaggisBot
         public async Task UpdateProbation(DiscordSocketClient dsc, SocketMessage sm)
         {
             if (sm.Author is IGuildUser user && user.RoleIds.Any(r => r == _knightsOfRen))
+            {
                 await UpdateProbation(dsc);
-
-            await sm.Channel.SendMessageAsync("Only the Knights of Ren can use this command");
+                await sm.Channel.SendMessageAsync("Updated Probation");
+            }
+            else
+                await sm.Channel.SendMessageAsync("Only the Knights of Ren can use this command");
         }
 
         public async Task UpdateProbation(DiscordSocketClient dsc)
