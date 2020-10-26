@@ -62,7 +62,6 @@ namespace GLHaggisBot
 
         private async Task MessageReceived(SocketMessage sm)
         {
-            _logger.Info($"{sm.Author.Username} - MESSAGE: {sm.Content}");
             if (sm.Author.IsBot)
                 return;
 
