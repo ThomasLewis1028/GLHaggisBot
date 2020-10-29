@@ -269,12 +269,12 @@ namespace GLHaggisBot
                 if (user.RoleIds.Any(r => r == _mp2Raider))
                 {
                     await user.RemoveRoleAsync(guild.GetRole(_mp2Raider));
-                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You now have the MP2-Raider role");
+                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You no longer have the MP2-Raider role");
                 }
                 else
                 {
                     await user.AddRoleAsync(guild.GetRole(_mp2Raider));
-                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You no longer have the MP2-Raider role");
+                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You now have the MP2-Raider role");
                 }
             }
             else
