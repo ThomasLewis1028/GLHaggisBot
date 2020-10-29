@@ -61,10 +61,8 @@ namespace GLHaggisBot
 
             try
             {
-                using (var stream = new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read))
-                {
-                    _credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
-                }
+                using var stream = new FileStream(@"credentials.json", FileMode.Open, FileAccess.Read);
+                _credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
 
                 // The file token.json stores the user's access and refresh tokens, and is created
                 // automatically when the authorization flow completes for the first time.

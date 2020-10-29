@@ -14,7 +14,7 @@ namespace GLHaggisBot
        
        public readonly Regex UpdateProbation = new Regex("^;(updateProbation|probationUpdate|up)$");
        
-       public readonly Regex AddRaider = new Regex("^;(addRaider|raiderAdd)(| <@(!|)(\\d+)>| \\d{9}| \\d{3}-\\d{3}-\\d{3})$", RegexOptions.IgnoreCase);
+       public readonly Regex AddRaider = new Regex("^;raidRole(| <@(!|)(\\d+)>| \\d{9}| \\d{3}-\\d{3}-\\d{3})$", RegexOptions.IgnoreCase);
 
        public readonly Regex RaidTimes = new Regex("^;(mp2Raid)$", RegexOptions.IgnoreCase);
 

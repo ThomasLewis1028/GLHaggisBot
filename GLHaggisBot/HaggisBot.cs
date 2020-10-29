@@ -126,7 +126,7 @@ namespace GLHaggisBot
                 "Get Member Activity - (ma | memberActivity) [(@<user> | <ally-code>)]\n" +
                 "Get Guild Activity - (ga | guildActivity)\n");
             eb.AddField("Raids",
-                "Add Raider Role - (addRaider | raiderAdd\n" +
+                "Add Raider Role - raidRole\n" +
                 "Get Raid Times - mp2Raid");
             
             await sm.Channel.SendMessageAsync(null, false, eb.Build());
