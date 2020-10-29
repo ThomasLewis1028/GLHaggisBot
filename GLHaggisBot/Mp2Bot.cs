@@ -1,19 +1,15 @@
 ﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Google.Apis.Discovery.v1;
-using Google.Apis.Discovery.v1.Data;
 using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Util.Store;
 using Newtonsoft.Json.Linq;
 using Color = Discord.Color;
 
@@ -24,16 +20,16 @@ namespace GLHaggisBot
         static readonly string[] Scopes = {SheetsService.Scope.SpreadsheetsReadonly};
         private readonly GoogleCredential _credential;
         private readonly String _spreadsheetId;
-        private readonly ulong _mutinyRole;
+        // private readonly ulong _mutinyRole;
         private readonly ulong _mp2Role;
-        private readonly ulong _sithApprentices;
+        // private readonly ulong _sithApprentices;
         private readonly ulong _knightsOfRen;
-        private readonly ulong _td;
+        // private readonly ulong _td;
         private readonly ulong _mutinyGuild;
         private readonly ulong _mp2General;
         private readonly ulong _mp2Probation;
         private readonly ulong _mp2Mediation;
-        private readonly String _apiKey;
+        private readonly ulong _mp2Raider;
         private readonly SheetsService _service;
         private static readonly RegularExpressions Regex = new RegularExpressions();
         private readonly String _activityList = "ACTIVITY LIST!A3:M52";
@@ -51,18 +47,17 @@ namespace GLHaggisBot
         {
             _spreadsheetId = (string) Prop.GetValue("mp2Sheet");
             _mp2Role = (ulong) Prop.GetValue("mutinyPartDeux");
-            _mutinyRole = (ulong) Prop.GetValue("mutiny");
+            // _mutinyRole = (ulong) Prop.GetValue("mutiny");
             _mutinyGuild = (ulong) Prop.GetValue("mutinyGuild");
-            _sithApprentices = (ulong) Prop.GetValue("sithApprentices");
+            // _sithApprentices = (ulong) Prop.GetValue("sithApprentices");
             _knightsOfRen = (ulong) Prop.GetValue("knightsOfRen");
-            _td = (ulong) Prop.GetValue("td");
+            // _td = (ulong) Prop.GetValue("td");
             _mp2General = (ulong) Prop.GetValue("mp2General");
             _mp2Probation = (ulong) Prop.GetValue("mp2Probation");
             _mp2Mediation = (ulong) Prop.GetValue("mp2Mediation");
-            _apiKey = (string) Prop.GetValue("apiKey");
+            _mp2Raider = (ulong) Prop.GetValue("mp2Raider");
 
             var applicationName = (string) Prop.GetValue("sheetName");
-            string credPath = "token.json";
 
             try
             {
@@ -163,12 +158,12 @@ namespace GLHaggisBot
                         Description = "Note that each section is capped at 60%, 5%+15% and 20% respectively"
                     };
                     var score = Double.Parse(member[12].ToString()?.Split('%')[0]!);
-                    eb.Color = Math.Abs(score - 100.00) < 0.01 
-                        ? new Color(47, 62, 80) 
-                        : score < 100.00 && score >= 85.00 
-                            ? new Color(34, 73, 54) 
-                            : score < 85.00 && score > 50.00 
-                                ? new Color(100, 0, 0) 
+                    eb.Color = Math.Abs(score - 100.00) < 0.01
+                        ? new Color(47, 62, 80)
+                        : score < 100.00 && score >= 85.00
+                            ? new Color(34, 73, 54)
+                            : score < 85.00 && score > 50.00
+                                ? new Color(100, 0, 0)
                                 : new Color(40, 40, 40);
                     eb.AddField("Galactic Power", member[2]);
                     eb.AddField("Tickets - " + member[4], member[3] + " Missed");
@@ -265,6 +260,27 @@ namespace GLHaggisBot
             }
         }
 
+        public async Task AddRaidRole(DiscordSocketClient dsc, SocketMessage sm)
+        {
+            var guild = dsc.GetGuild(_mutinyGuild);
+
+            if (sm.Author is IGuildUser user && user.RoleIds.Any(r => r == _mp2Role))
+            {
+                if (user.RoleIds.Any(r => r == _mp2Raider))
+                {
+                    await user.RemoveRoleAsync(guild.GetRole(_mp2Raider));
+                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You now have the MP2-Raider role");
+                }
+                else
+                {
+                    await user.AddRoleAsync(guild.GetRole(_mp2Raider));
+                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You no longer have the MP2-Raider role");
+                }
+            }
+            else
+                await sm.Channel.SendMessageAsync("You are not in MP2");
+        }
+
         public async Task UpdateProbation(DiscordSocketClient dsc, SocketMessage sm)
         {
             if (sm.Author is IGuildUser user && user.RoleIds.Any(r => r == _knightsOfRen))
@@ -303,20 +319,37 @@ namespace GLHaggisBot
                 if (activityValues.Any(m => ign.Any(a => a.Contains(m[0]))))
                 {
                     if (member.RoleIds.Contains(_mp2Probation)) continue;
-                    
+
                     await member.AddRoleAsync(guild.GetRole(_mp2Probation));
                     var mediationChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2Mediation);
-                    await mediationChannel.SendMessageAsync($"<@{member.Id}> You are now on probation. Use ;ma to view your current activity.");
+                    await mediationChannel.SendMessageAsync(
+                        $"<@{member.Id}> You are now on probation. Use ;ma to view your current activity.");
                 }
                 else
                 {
                     if (!member.RoleIds.Contains(_mp2Probation)) continue;
-                    
+
                     await member.RemoveRoleAsync(guild.GetRole(_mp2Probation));
                     var mp2GeneralChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2General);
-                    await mp2GeneralChannel.SendMessageAsync($"<@{member.Id}> You are no longer on probation probation!");
+                    await mp2GeneralChannel.SendMessageAsync(
+                        $"<@{member.Id}> You are no longer on probation probation!");
                 }
             }
+        }
+
+        public async Task GetRaidTimes(SocketMessage sm)
+        {
+            EmbedBuilder eb = new EmbedBuilder
+            {
+                Color = new Color(139, 69, 19),
+                Title = "MP2 Raid Times",
+                Description = "All raid times are in UTC"
+            };
+            eb.AddField("", "HSTR: 20:00, 23:00, 02:00 - Rotating\n" +
+                            "HPit: 20:00\n" +
+                            "HAAT: 20:00");
+
+            await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}>", false, eb.Build());
         }
     }
 }
