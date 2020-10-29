@@ -93,6 +93,12 @@ namespace GLHaggisBot
                         await _mp2Bot.AddRaidRole(_client, sm);
                         await SendReaction(sm, CheckMark);
                         break;
+                    case var _ when Regex.RaidTimes.IsMatch(sm.Content):
+                        await SendReaction(sm, SearchGlass);
+                        _logger.Info("Getting Raid Times: " + sm.Content);
+                        await _mp2Bot.GetRaidTimes(sm);
+                        await SendReaction(sm, CheckMark);
+                        break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
                         _logger.Info("Sending help list: " + sm.Content);
                         await SendHelp(sm);

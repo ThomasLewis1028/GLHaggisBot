@@ -266,7 +266,7 @@ namespace GLHaggisBot
 
             if (sm.Author is IGuildUser user && user.RoleIds.Any(r => r == _mp2Role))
             {
-                if (user.RoleIds.Any(r => r == _mp2Raider))
+                if (user.RoleIds.Contains(_mp2Raider))
                 {
                     await user.RemoveRoleAsync(guild.GetRole(_mp2Raider));
                     await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You no longer have the MP2-Raider role");
