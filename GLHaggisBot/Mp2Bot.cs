@@ -260,11 +260,12 @@ namespace GLHaggisBot
             }
         }
 
-        public async Task AddRaidRole(DiscordSocketClient dsc, SocketMessage sm)
+        public async Task ChangeRaidRole(DiscordSocketClient dsc, SocketMessage sm)
         {
             var guild = dsc.GetGuild(_mutinyGuild);
+            await guild.DownloadUsersAsync();
 
-            if (sm.Author is IGuildUser user && user.RoleIds.Any(r => r == _mp2Role))
+            if (sm.Author is IGuildUser user && user.RoleIds.Contains(_mp2Role))
             {
                 if (user.RoleIds.Contains(_mp2Raider))
                 {
@@ -283,7 +284,7 @@ namespace GLHaggisBot
 
         public async Task UpdateProbation(DiscordSocketClient dsc, SocketMessage sm)
         {
-            if (sm.Author is IGuildUser user && user.RoleIds.Any(r => r == _knightsOfRen))
+            if (sm.Author is IGuildUser user && user.RoleIds.Contains(_knightsOfRen))
             {
                 await UpdateProbation(dsc);
                 await sm.Channel.SendMessageAsync("Updated Probation");

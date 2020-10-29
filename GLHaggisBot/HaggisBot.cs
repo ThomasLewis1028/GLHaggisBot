@@ -90,7 +90,7 @@ namespace GLHaggisBot
                     case var _ when Regex.AddRaider.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Adding Raider Role: " + sm.Content);
-                        await _mp2Bot.AddRaidRole(_client, sm);
+                        await _mp2Bot.ChangeRaidRole(_client, sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.RaidTimes.IsMatch(sm.Content):
