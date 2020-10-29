@@ -344,7 +344,7 @@ namespace GLHaggisBot
                 Title = "MP2 Raid Times",
                 Description = "All raid times are in UTC"
             };
-            eb.AddField("", "HSTR: 20:00, 23:00, 02:00 - Rotating\n" +
+            eb.AddField("Times", "HSTR: 20:00, 23:00, 02:00 - Rotating\n" +
                             "HPit: 20:00\n" +
                             "HAAT: 20:00");
 
