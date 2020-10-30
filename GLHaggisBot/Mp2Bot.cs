@@ -166,7 +166,7 @@ namespace GLHaggisBot
                     eb.AddField("Galactic Power", member[2]);
                     eb.AddField("Tickets - " + member[4], member[3] + " Missed");
                     eb.AddField("Territory War - " + member[6] + " + " + member[9],
-                        member[5] + " Joined | " + member[7] + " Offense Banners | " + member[8] + " Defense Banners");
+                        member[5] + " Joined | " + member[7] + " Defense Banners | " + member[8] + " Offense Banners");
                     eb.AddField("Territory Battle - " + member[11], member[10] + " Participation");
                     eb.AddField("Overall Score", member[12] +
                                                  (score < 85.00
