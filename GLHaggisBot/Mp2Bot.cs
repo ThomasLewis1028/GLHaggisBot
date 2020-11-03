@@ -331,7 +331,7 @@ namespace GLHaggisBot
                     await member.RemoveRoleAsync(guild.GetRole(_mp2Probation));
                     var mp2GeneralChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2General);
                     await mp2GeneralChannel.SendMessageAsync(
-                        $"<@{member.Id}> You are no longer on probation probation!");
+                        $"<@{member.Id}> You are no longer on probation!");
                 }
             }
         }
