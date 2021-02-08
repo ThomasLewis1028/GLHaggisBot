@@ -175,12 +175,12 @@ namespace GLHaggisBot
                                                      ? " - ON PROBATION"
                                                      : ""));
 
-                    await sm.Channel.SendMessageAsync(null, false, eb.Build());
+                    await ium.ReplyAsync(null, false, eb.Build());
                 }
             }
             else
             {
-                await sm.Channel.SendMessageAsync(userName == null ? allyCode : userName + " not found");
+                await ium.ReplyAsync(userName == null ? allyCode : userName + " not found");
             }
         }
 
