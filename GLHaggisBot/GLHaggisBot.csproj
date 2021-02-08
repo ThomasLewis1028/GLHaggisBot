@@ -6,13 +6,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Discord.Net" Version="2.2.0" />
-      <PackageReference Include="Discord.Net.Commands" Version="2.2.0" />
-      <PackageReference Include="Discord.Net.Core" Version="2.2.0" />
+      <PackageReference Include="Discord.Net" Version="2.3.0" />
+      <PackageReference Include="Discord.Net.Commands" Version="2.3.0" />
+      <PackageReference Include="Discord.Net.Core" Version="2.3.0" />
       <PackageReference Include="Google.Apis" Version="1.49.0" />
       <PackageReference Include="Google.Apis.Discovery.v1" Version="1.49.0" />
-      <PackageReference Include="Google.Apis.Sheets.v4" Version="1.49.0.2069" />
-      <PackageReference Include="NLog" Version="4.7.4" />
+      <PackageReference Include="Google.Apis.Sheets.v4" Version="1.49.0.2175" />
+      <PackageReference Include="NLog" Version="4.7.7" />
     </ItemGroup>
 
     <ItemGroup>

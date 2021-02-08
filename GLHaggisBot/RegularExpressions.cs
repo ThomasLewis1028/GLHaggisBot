@@ -18,6 +18,8 @@ namespace GLHaggisBot
 
        public readonly Regex RaidTimes = new Regex("^;(mp2Raid)$", RegexOptions.IgnoreCase);
 
+       public readonly Regex MP2Requirements = new Regex("^;mp2req", RegexOptions.IgnoreCase);
+
        // public readonly Regex TempConv = new Regex("^!temp -?\\d+(.\\d+|)(c|f)$", RegexOptions.IgnoreCase);
 
        // public readonly Regex Subreddit = new Regex("(^| |^/| /)r/[^/ ]+", RegexOptions.IgnoreCase);

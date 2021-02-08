@@ -96,6 +96,8 @@ namespace GLHaggisBot
             String userName = null;
             String allyCode = null;
 
+            IUserMessage ium = (IUserMessage) sm;
+
             if (sm.MentionedUsers.Count > 0)
                 userName = sm.MentionedUsers.First().Username + "#" + sm.MentionedUsers.First().Discriminator;
             else if (Regex.AllyCode.IsMatch(sm.Content))
@@ -116,7 +118,7 @@ namespace GLHaggisBot
                     inGameName = memberValues.Where(m => m[1].ToString() == userName).ToList();
                 else
                 {
-                    await sm.Channel.SendMessageAsync(userName + " not found");
+                    await ium.ReplyAsync(userName + " not found");
                     return;
                 }
             }
@@ -129,13 +131,13 @@ namespace GLHaggisBot
                     inGameName = memberValues.Where(m => m[2].ToString() == allyCode).ToList();
                 else
                 {
-                    await sm.Channel.SendMessageAsync(allyCode + " not found");
+                    await ium.ReplyAsync(allyCode + " not found");
                     return;
                 }
             }
             else
             {
-                await sm.Channel.SendMessageAsync("An error occurred");
+                await ium.ReplyAsync("An error occurred");
                 return;
             }
 
@@ -182,7 +184,7 @@ namespace GLHaggisBot
             }
         }
 
-        public async void GetAllActivity(SocketMessage sm)
+        public async void GetAllActivity(IUserMessage ium)
         {
             SpreadsheetsResource.ValuesResource.GetRequest activityRequest =
                 _service.Spreadsheets.Values.Get(_spreadsheetId, _activityList);
@@ -250,45 +252,45 @@ namespace GLHaggisBot
                 eb.AddField("=============== 41 - 50 ===============", sb);
 
 
-                await sm.Channel.SendMessageAsync(null, false, eb.Build());
+                await ium.ReplyAsync(null, false, eb.Build());
             }
             else
             {
-                await sm.Channel.SendMessageAsync("No Data Found");
+                await ium.ReplyAsync("No Data Found");
             }
         }
 
-        public async Task ChangeRaidRole(DiscordSocketClient dsc, SocketMessage sm)
+        public async Task ChangeRaidRole(DiscordSocketClient dsc, IUserMessage ium)
         {
             var guild = dsc.GetGuild(_mutinyGuild);
             await guild.DownloadUsersAsync();
 
-            if (sm.Author is IGuildUser user && user.RoleIds.Contains(_mp2Role))
+            if (ium.Author is IGuildUser user && user.RoleIds.Contains(_mp2Role))
             {
                 if (user.RoleIds.Contains(_mp2Raider))
                 {
                     await user.RemoveRoleAsync(guild.GetRole(_mp2Raider));
-                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You no longer have the MP2-Raider role");
+                    await ium.ReplyAsync("You no longer have the MP2-Raider role");
                 }
                 else
                 {
                     await user.AddRoleAsync(guild.GetRole(_mp2Raider));
-                    await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}> You now have the MP2-Raider role");
+                    await ium.ReplyAsync("You now have the MP2-Raider role");
                 }
             }
             else
-                await sm.Channel.SendMessageAsync("You are not in MP2");
+                await ium.ReplyAsync("You are not in MP2");
         }
 
-        public async Task UpdateProbation(DiscordSocketClient dsc, SocketMessage sm)
+        public async Task UpdateProbation(DiscordSocketClient dsc, IUserMessage ium)
         {
-            if (sm.Author is IGuildUser user && user.RoleIds.Contains(_knightsOfRen))
+            if (ium.Author is IGuildUser user && user.RoleIds.Contains(_knightsOfRen))
             {
                 await UpdateProbation(dsc);
-                await sm.Channel.SendMessageAsync("Updated Probation");
+                await ium.ReplyAsync("Updated Probation");
             }
             else
-                await sm.Channel.SendMessageAsync("Only the Knights of Ren can use this command");
+                await ium.ReplyAsync("Only the Knights of Ren can use this command");
         }
 
         public async Task UpdateProbation(DiscordSocketClient dsc)
@@ -336,7 +338,7 @@ namespace GLHaggisBot
             }
         }
 
-        public async Task GetRaidTimes(SocketMessage sm)
+        public async Task GetRaidTimes(IUserMessage ium)
         {
             EmbedBuilder eb = new EmbedBuilder
             {
@@ -347,8 +349,30 @@ namespace GLHaggisBot
             eb.AddField("Times", "HSTR: 20:00, 23:00, 02:00 - Rotating\n" +
                             "HPit: 20:00\n" +
                             "HAAT: 20:00");
+            
+            await ium.ReplyAsync(null, false, eb.Build());
+        }
 
-            await sm.Channel.SendMessageAsync($"<@!{sm.Author.Id}>", false, eb.Build());
+        public async Task MP2Requirements(IUserMessage ium)
+        {
+            EmbedBuilder eb = new EmbedBuilder
+            {
+                Color = Color.DarkGrey,
+                Title = "MP2 Requirements"
+            };
+            eb.AddField("Tickets",
+                "All members must earn 600 tickets daily.");
+            eb.AddField("Territory Wars",
+                "All members must join and fully participate in all Territory Wars");
+            eb.AddField("Territory Battles",
+                "All members must fully participate in all phases of a Territory Battle");
+            eb.AddField("Discord",
+                "All members must at least be semi-active in Discord, and must check and respond to all announcements");
+            eb.AddField("Holidays",
+                "All members must inform officers if they will be away for any time so that you are not assumed inactive.\n" +
+                "Life is always more important than a game.");
+
+            await ium.ReplyAsync(null, false, eb.Build());
         }
     }
 }

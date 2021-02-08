@@ -78,30 +78,35 @@ namespace GLHaggisBot
                     case var _ when Regex.GuildActivity.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Getting Guild Activity: " + sm.Content);
-                        _mp2Bot.GetAllActivity(sm);
+                        _mp2Bot.GetAllActivity((IUserMessage) sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.UpdateProbation.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Updating Probation: " + sm.Content);
-                        await _mp2Bot.UpdateProbation(_client, sm);
+                        await _mp2Bot.UpdateProbation(_client, (IUserMessage) sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.AddRaider.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Adding Raider Role: " + sm.Content);
-                        await _mp2Bot.ChangeRaidRole(_client, sm);
+                        await _mp2Bot.ChangeRaidRole(_client, (IUserMessage) sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.RaidTimes.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Getting Raid Times: " + sm.Content);
-                        await _mp2Bot.GetRaidTimes(sm);
+                        await _mp2Bot.GetRaidTimes((IUserMessage) sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
                         _logger.Info("Sending help list: " + sm.Content);
-                        await SendHelp(sm);
+                        await SendHelp((IUserMessage) sm);
+                        break;
+                    case var _ when Regex.MP2Requirements.IsMatch(sm.Content):
+                        _logger.Info("Sending Requirements List: " + sm.Content);
+                        await _mp2Bot.MP2Requirements((IUserMessage) sm);
+                        await SendReaction(sm, CheckMark);
                         break;
                 }
             }
@@ -111,15 +116,17 @@ namespace GLHaggisBot
             }
         }
 
-        private async Task SendHelp(SocketMessage sm)
+        private async Task SendHelp(IUserMessage ium)
         {
-            EmbedBuilder eb = new EmbedBuilder();
-            eb.Title = "Help";
-            eb.Description = "All commands are case insensitive and are preceded with ;\n" +
-                             "<> indicates required parameter \n" +
-                             "[] indicates optional parameter \n" +
-                             "() indicates either or parameter";
-            eb.Color = Color.Gold;
+            var eb = new EmbedBuilder
+            {
+                Title = "Help",
+                Description = "All commands are case insensitive and are preceded with ;\n" +
+                              "<> indicates required parameter \n" +
+                              "[] indicates optional parameter \n" +
+                              "() indicates either or parameter",
+                Color = Color.Gold
+            };
             eb.AddField("Help", "help");
 
             eb.AddField("Guild Activity",
@@ -128,11 +135,13 @@ namespace GLHaggisBot
             eb.AddField("Raids",
                 "Add Raider Role - raidRole\n" +
                 "Get Raid Times - mp2Raid");
-            
-            await sm.Channel.SendMessageAsync(null, false, eb.Build());
+            eb.AddField("Requirements",
+                "mp2Req");
+
+            await ium.ReplyAsync(null, false, eb.Build());
         }
 
-        private async Task SendReaction(SocketMessage sm, Emoji emoji)
+        private static async Task SendReaction(SocketMessage sm, Emoji emoji)
         {
             await sm.AddReactionAsync(emoji);
         }
