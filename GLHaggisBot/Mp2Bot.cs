@@ -38,7 +38,7 @@ namespace GLHaggisBot
         private static readonly RegularExpressions Regex = new RegularExpressions();
         private readonly String _activityList = "ACTIVITY LIST!A3:M52";
         private readonly String _activityTotals = "ACTIVITY LIST!A53:M53";
-        private readonly String _members = "MEMBERS!A2:F51";
+        private readonly String _members = "MEMBERS!A2:G51";
 
 
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
@@ -122,7 +122,7 @@ namespace GLHaggisBot
                     var member = activityValues.First(m => m[0].ToString() == ign[0].ToString());
                     EmbedBuilder eb = new EmbedBuilder
                     {
-                        Title = ign[0] + " - " + memberValues.First(m => m[0].ToString() == ign[0].ToString())[2],
+                        Title = ign[0] + " - " + memberValues.First(m => m[0].ToString() == ign[0].ToString())[3],
                         Description = "Note that each section is capped at 60%, 5%+15% and 20% respectively"
                     };
                     var score = Double.Parse(member[12].ToString()?.Split('%')[0]!);
@@ -394,15 +394,15 @@ namespace GLHaggisBot
             IUserMessage ium = (IUserMessage) sm;
 
             // Define request parameters.
-            String userName = null;
+            ulong userId = 0;
             String allyCode = null;
 
             if (sm.MentionedUsers.Count > 0)
-                userName = sm.MentionedUsers.First().Username + "#" + sm.MentionedUsers.First().Discriminator;
+                userId = sm.MentionedUsers.First().Id;
             else if (Regex.AllyCode.IsMatch(sm.Content))
                 allyCode = sm.Content.Split(' ')[1];
             else
-                userName = sm.Author.Username + "#" + sm.Author.Discriminator;
+                userId = sm.Author.Id;
 
             SpreadsheetsResource.ValuesResource.GetRequest memberRequest =
                 _service.Spreadsheets.Values.Get(_spreadsheetId, _members);
@@ -410,11 +410,11 @@ namespace GLHaggisBot
             ValueRange memberResponse = await memberRequest.ExecuteAsync();
             IList<IList<Object>> memberValues = memberResponse.Values;
 
-            if (!String.IsNullOrEmpty(userName))
+            if (userId != 0)
             {
                 if (memberValues != null && memberValues.Count > 0)
-                    return memberValues.Where(m => m[1].ToString() == userName).ToList();
-                await ium.ReplyAsync(userName + " not found");
+                    return memberValues.Where(m => m[2].ToString() == userId.ToString()).ToList();
+                await ium.ReplyAsync(userId + " not found");
                 return null;
             }
 
@@ -424,7 +424,7 @@ namespace GLHaggisBot
                     allyCode = allyCode.Insert(3, "-").Insert(7, "-");
 
                 if (memberValues != null && memberValues.Count > 0)
-                    return memberValues.Where(m => m[2].ToString() == allyCode).ToList();
+                    return memberValues.Where(m => m[3].ToString() == allyCode).ToList();
                 await ium.ReplyAsync(allyCode + " not found");
                 return null;
             }
