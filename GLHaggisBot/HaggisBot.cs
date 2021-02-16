@@ -96,16 +96,21 @@ namespace GLHaggisBot
                     case var _ when Regex.RaidTimes.IsMatch(sm.Content):
                         await SendReaction(sm, SearchGlass);
                         _logger.Info("Getting Raid Times: " + sm.Content);
-                        await _mp2Bot.GetRaidTimes((IUserMessage) sm);
+                        await Mp2Bot.GetRaidTimes((IUserMessage) sm);
                         await SendReaction(sm, CheckMark);
                         break;
                     case var _ when Regex.Help.IsMatch(sm.Content):
                         _logger.Info("Sending help list: " + sm.Content);
                         await SendHelp((IUserMessage) sm);
                         break;
-                    case var _ when Regex.MP2Requirements.IsMatch(sm.Content):
+                    case var _ when Regex.Mp2Requirements.IsMatch(sm.Content):
                         _logger.Info("Sending Requirements List: " + sm.Content);
-                        await _mp2Bot.MP2Requirements((IUserMessage) sm);
+                        await _mp2Bot.Mp2Requirements((IUserMessage) sm);
+                        await SendReaction(sm, CheckMark);
+                        break;
+                    case var _ when Regex.TwTargets.IsMatch(sm.Content):
+                        _logger.Info("Sending Territory War Targets: " + sm.Content);
+                        await _mp2Bot.TerritoryWarTarget(sm);
                         await SendReaction(sm, CheckMark);
                         break;
                 }
@@ -137,6 +142,8 @@ namespace GLHaggisBot
                 "Get Raid Times - mp2Raid");
             eb.AddField("Requirements",
                 "mp2Req");
+            eb.AddField("Territory War Targets",
+                "tw [@<user> | <ally-code>]");
 
             await ium.ReplyAsync(null, false, eb.Build());
         }

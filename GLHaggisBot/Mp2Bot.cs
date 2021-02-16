@@ -19,11 +19,15 @@ namespace GLHaggisBot
     {
         static readonly string[] Scopes = {SheetsService.Scope.SpreadsheetsReadonly};
         private readonly GoogleCredential _credential;
+
         private readonly String _spreadsheetId;
+
         // private readonly ulong _mutinyRole;
         private readonly ulong _mp2Role;
+
         // private readonly ulong _sithApprentices;
         private readonly ulong _knightsOfRen;
+
         // private readonly ulong _td;
         private readonly ulong _mutinyGuild;
         private readonly ulong _mp2General;
@@ -33,6 +37,7 @@ namespace GLHaggisBot
         private readonly SheetsService _service;
         private static readonly RegularExpressions Regex = new RegularExpressions();
         private readonly String _activityList = "ACTIVITY LIST!A3:M52";
+        private readonly String _activityTotals = "ACTIVITY LIST!A53:M53";
         private readonly String _members = "MEMBERS!A2:F51";
 
 
@@ -92,61 +97,24 @@ namespace GLHaggisBot
 
         public async void GetActivity(SocketMessage sm)
         {
-            // Define request parameters.
-            String userName = null;
-            String allyCode = null;
-
             IUserMessage ium = (IUserMessage) sm;
 
-            if (sm.MentionedUsers.Count > 0)
-                userName = sm.MentionedUsers.First().Username + "#" + sm.MentionedUsers.First().Discriminator;
-            else if (Regex.AllyCode.IsMatch(sm.Content))
-                allyCode = sm.Content.Split(' ')[1];
-            else
-                userName = sm.Author.Username + "#" + sm.Author.Discriminator;
+            // Grab the in-game names
+            var inGameName = await GetInGameNames(sm);
 
+            // Get the members list
             SpreadsheetsResource.ValuesResource.GetRequest memberRequest =
                 _service.Spreadsheets.Values.Get(_spreadsheetId, _members);
-
             ValueRange memberResponse = await memberRequest.ExecuteAsync();
             IList<IList<Object>> memberValues = memberResponse.Values;
 
-            IList<IList<Object>> inGameName;
-            if (!String.IsNullOrEmpty(userName))
-            {
-                if (memberValues != null && memberValues.Count > 0)
-                    inGameName = memberValues.Where(m => m[1].ToString() == userName).ToList();
-                else
-                {
-                    await ium.ReplyAsync(userName + " not found");
-                    return;
-                }
-            }
-            else if (!String.IsNullOrEmpty(allyCode))
-            {
-                if (!allyCode.Contains('-'))
-                    allyCode = allyCode.Insert(3, "-").Insert(7, "-");
-
-                if (memberValues != null && memberValues.Count > 0)
-                    inGameName = memberValues.Where(m => m[2].ToString() == allyCode).ToList();
-                else
-                {
-                    await ium.ReplyAsync(allyCode + " not found");
-                    return;
-                }
-            }
-            else
-            {
-                await ium.ReplyAsync("An error occurred");
-                return;
-            }
-
-
+            // Get the activity list
             SpreadsheetsResource.ValuesResource.GetRequest activityRequest =
                 _service.Spreadsheets.Values.Get(_spreadsheetId, _activityList);
-
             ValueRange activityResponse = await activityRequest.ExecuteAsync();
             IList<IList<Object>> activityValues = activityResponse.Values;
+
+            // Iterate through and find the related values
             if (activityValues != null && activityValues.Count > 0)
             {
                 foreach (var ign in inGameName)
@@ -154,7 +122,7 @@ namespace GLHaggisBot
                     var member = activityValues.First(m => m[0].ToString() == ign[0].ToString());
                     EmbedBuilder eb = new EmbedBuilder
                     {
-                        Title = ign[0] + " - " + memberValues.First(m => m[0] == ign[0])[2],
+                        Title = ign[0] + " - " + memberValues.First(m => m[0].ToString() == ign[0].ToString())[2],
                         Description = "Note that each section is capped at 60%, 5%+15% and 20% respectively"
                     };
                     var score = Double.Parse(member[12].ToString()?.Split('%')[0]!);
@@ -177,10 +145,6 @@ namespace GLHaggisBot
 
                     await ium.ReplyAsync(null, false, eb.Build());
                 }
-            }
-            else
-            {
-                await ium.ReplyAsync(userName == null ? allyCode : userName + " not found");
             }
         }
 
@@ -338,7 +302,7 @@ namespace GLHaggisBot
             }
         }
 
-        public async Task GetRaidTimes(IUserMessage ium)
+        public static async Task GetRaidTimes(IUserMessage ium)
         {
             EmbedBuilder eb = new EmbedBuilder
             {
@@ -347,13 +311,13 @@ namespace GLHaggisBot
                 Description = "All raid times are in UTC"
             };
             eb.AddField("Times", "HSTR: 20:00, 23:00, 02:00 - Rotating\n" +
-                            "HPit: 20:00\n" +
-                            "HAAT: 20:00");
-            
+                                 "HPit: 20:00\n" +
+                                 "HAAT: 20:00");
+
             await ium.ReplyAsync(null, false, eb.Build());
         }
 
-        public async Task MP2Requirements(IUserMessage ium)
+        public async Task Mp2Requirements(IUserMessage ium)
         {
             EmbedBuilder eb = new EmbedBuilder
             {
@@ -373,6 +337,100 @@ namespace GLHaggisBot
                 "Life is always more important than a game.");
 
             await ium.ReplyAsync(null, false, eb.Build());
+        }
+
+        public async Task TerritoryWarTarget(SocketMessage sm)
+        {
+            IUserMessage ium = (IUserMessage) sm;
+
+            var inGameName = await GetInGameNames(sm);
+
+            // Get the activity list
+            SpreadsheetsResource.ValuesResource.GetRequest activityRequest =
+                _service.Spreadsheets.Values.Get(_spreadsheetId, _activityList);
+            ValueRange activityResponse = await activityRequest.ExecuteAsync();
+            IList<IList<Object>> activityValues = activityResponse.Values;
+
+            // Get the activity totals
+            SpreadsheetsResource.ValuesResource.GetRequest activityTotals =
+                _service.Spreadsheets.Values.Get(_spreadsheetId, _activityTotals);
+            ValueRange activityTotalResponse = await activityTotals.ExecuteAsync();
+            IList<IList<Object>> activityTotalValues = activityTotalResponse.Values;
+
+            if (activityValues != null && activityValues.Count > 0)
+            {
+                foreach (var ign in inGameName)
+                {
+                    var member = activityValues.First(m => m[0].ToString() == ign[0].ToString());
+                    var totals = activityTotalValues.First();
+
+                    EmbedBuilder eb = new EmbedBuilder()
+                    {
+                        Color = Color.Purple,
+                        Title = $"{ign[0]} Territory War Targets"
+                    };
+
+                    var defTar = (Double.Parse(member[2].ToString()?.Replace(",", "")!)
+                                  / Double.Parse(totals[2].ToString()?.Replace(",", "")!)
+                                  * Double.Parse(totals[7].ToString()?.Replace(",", "")!))
+                        .ToString("F0");
+                    var offTar = (Double.Parse(member[2].ToString()?.Replace(",", "")!)
+                                  / Double.Parse(totals[2].ToString()?.Replace(",", "")!)
+                                  * Double.Parse(totals[8].ToString()?.Replace(",", "")!))
+                        .ToString("F0");
+
+                    eb.AddField("Defensive banners",
+                        $"{defTar}");
+                    eb.AddField("Offensive banners",
+                        $"{offTar}");
+
+                    await ium.ReplyAsync(null, false, eb.Build());
+                }
+            }
+        }
+
+        private async Task<IList<IList<Object>>> GetInGameNames(SocketMessage sm)
+        {
+            IUserMessage ium = (IUserMessage) sm;
+
+            // Define request parameters.
+            String userName = null;
+            String allyCode = null;
+
+            if (sm.MentionedUsers.Count > 0)
+                userName = sm.MentionedUsers.First().Username + "#" + sm.MentionedUsers.First().Discriminator;
+            else if (Regex.AllyCode.IsMatch(sm.Content))
+                allyCode = sm.Content.Split(' ')[1];
+            else
+                userName = sm.Author.Username + "#" + sm.Author.Discriminator;
+
+            SpreadsheetsResource.ValuesResource.GetRequest memberRequest =
+                _service.Spreadsheets.Values.Get(_spreadsheetId, _members);
+
+            ValueRange memberResponse = await memberRequest.ExecuteAsync();
+            IList<IList<Object>> memberValues = memberResponse.Values;
+
+            if (!String.IsNullOrEmpty(userName))
+            {
+                if (memberValues != null && memberValues.Count > 0)
+                    return memberValues.Where(m => m[1].ToString() == userName).ToList();
+                await ium.ReplyAsync(userName + " not found");
+                return null;
+            }
+
+            if (!String.IsNullOrEmpty(allyCode))
+            {
+                if (!allyCode.Contains('-'))
+                    allyCode = allyCode.Insert(3, "-").Insert(7, "-");
+
+                if (memberValues != null && memberValues.Count > 0)
+                    return memberValues.Where(m => m[2].ToString() == allyCode).ToList();
+                await ium.ReplyAsync(allyCode + " not found");
+                return null;
+            }
+
+            await ium.ReplyAsync("An error occurred");
+            return null;
         }
     }
 }
