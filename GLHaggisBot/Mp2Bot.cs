@@ -289,6 +289,7 @@ namespace GLHaggisBot
                     var mediationChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2Mediation);
                     await mediationChannel.SendMessageAsync(
                         $"<@{member.Id}> You are now on probation. Use ;ma to view your current activity.");
+                    _logger.Info($"{member.Username} has been added to probation");
                 }
                 else
                 {
@@ -298,6 +299,7 @@ namespace GLHaggisBot
                     var mp2GeneralChannel = (ISocketMessageChannel) dsc.GetChannel(_mp2General);
                     await mp2GeneralChannel.SendMessageAsync(
                         $"<@{member.Id}> You are no longer on probation!");
+                    _logger.Info($"{member.Username} has been removed from probation");
                 }
             }
         }
