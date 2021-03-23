@@ -122,7 +122,7 @@ namespace GLHaggisBot
             }
         }
 
-        private async Task SendHelp(IUserMessage ium)
+        private static async Task SendHelp(IUserMessage ium)
         {
             var eb = new EmbedBuilder
             {
