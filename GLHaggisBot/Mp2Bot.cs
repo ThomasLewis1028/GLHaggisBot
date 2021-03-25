@@ -398,11 +398,14 @@ namespace GLHaggisBot
             // Define request parameters.
             ulong userId = 0;
             String allyCode = null;
+            String inGameName = null;
 
             if (sm.MentionedUsers.Count > 0)
                 userId = sm.MentionedUsers.First().Id;
             else if (Regex.AllyCode.IsMatch(sm.Content))
                 allyCode = sm.Content.Split(' ')[1];
+            else if (sm.Content.Split(' ').Length > 1)
+                inGameName = sm.Content.Split(' ')[1];
             else
                 userId = sm.Author.Id;
 
@@ -428,6 +431,14 @@ namespace GLHaggisBot
                 if (memberValues != null && memberValues.Count > 0)
                     return memberValues.Where(m => m[3].ToString() == allyCode).ToList();
                 await ium.ReplyAsync(allyCode + " not found");
+                return null;
+            }
+
+            if (!String.IsNullOrEmpty(inGameName))
+            {
+                if (memberValues != null && memberValues.Count > 0)
+                    return memberValues.Where(m => m[0].ToString()!.Contains(inGameName)).ToList();
+                await ium.ReplyAsync(inGameName + " not found");
                 return null;
             }
 
