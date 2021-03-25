@@ -437,7 +437,7 @@ namespace GLHaggisBot
             if (!String.IsNullOrEmpty(inGameName))
             {
                 if (memberValues != null && memberValues.Count > 0)
-                    return memberValues.Where(m => m[0].ToString()!.Contains(inGameName)).ToList();
+                    return memberValues.Where(m => m[0].ToString()!.Contains(inGameName, StringComparison.OrdinalIgnoreCase)).ToList();
                 await ium.ReplyAsync(inGameName + " not found");
                 return null;
             }
