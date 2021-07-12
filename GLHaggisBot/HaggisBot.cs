@@ -10,9 +10,9 @@ namespace GLHaggisBot
 {
     internal class HaggisBot
     {
-        private readonly Mp2Bot _mp2Bot = new Mp2Bot();
+        private readonly Mp2Bot _mp2Bot = new();
 
-        private static readonly RegularExpressions Regex = new RegularExpressions();
+        private static readonly RegularExpressions Regex = new();
 
         private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -25,8 +25,8 @@ namespace GLHaggisBot
         private readonly string _token;
 
         // Set up emoji for Reactions
-        private static readonly Emoji SearchGlass = new Emoji("🔍");
-        private static readonly Emoji CheckMark = new Emoji("✅");
+        private static readonly Emoji SearchGlass = new("🔍");
+        private static readonly Emoji CheckMark = new("✅");
 
         // Discord config files
         private DiscordSocketClient _client;
@@ -53,9 +53,9 @@ namespace GLHaggisBot
 
             while (true)
             {
-                await Task.Delay(3600000);
-                await _mp2Bot.UpdateProbation(_client);
-                _logger.Info("Updated probation");
+                // await Task.Delay(3600000);
+                // await _mp2Bot.UpdateProbation(_client);
+                // _logger.Info("Updated probation");
             }
 
             // ReSharper disable once FunctionNeverReturns
